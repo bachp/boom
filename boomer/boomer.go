@@ -29,6 +29,7 @@ type result struct {
 	statusCode    int
 	duration      time.Duration
 	contentLength int64
+	cipher        uint16
 }
 
 type ReqOpts struct {

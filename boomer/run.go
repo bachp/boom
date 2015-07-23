@@ -61,10 +61,14 @@ func (b *Boomer) worker(wg *sync.WaitGroup, ch chan *http.Request) {
 		s := time.Now()
 		code := 0
 		size := int64(0)
+		cipher := uint16(0)
 		resp, err := client.Do(req)
 		if err == nil {
 			size = resp.ContentLength
 			code = resp.StatusCode
+			if resp.TLS != nil {
+				cipher = resp.TLS.CipherSuite
+			}
 			resp.Body.Close()
 		}
 		if b.bar != nil {
@@ -77,6 +81,7 @@ func (b *Boomer) worker(wg *sync.WaitGroup, ch chan *http.Request) {
 			duration:      time.Now().Sub(s),
 			err:           err,
 			contentLength: size,
+			cipher:        cipher,
 		}
 	}
 }
